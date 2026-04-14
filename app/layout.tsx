@@ -11,8 +11,7 @@ export const metadata = {
   description: 'Portafolio profesional de Frank David Gualdron.',
 }
 
-export default function RootLayout({ children }) {
-  return (
+export default function RootLayout({ children }: { children: React.ReactNode }) {  return (
     <html lang="es">
       <body className={inter.className}>
         <LangProvider>
