@@ -1,51 +1,37 @@
+'use client'
+
+import { useLang } from '@/context/LangContext'
+
 export default function Footer() {
+  const { t } = useLang()
   const anio = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-white/10 py-10 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-
-        {/* Logo */}
-        <div className="text-center md:text-left">
-          <p className="text-white font-bold text-lg">
-            Frank<span className="text-purple-500">.</span>dev
+    <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '40px 24px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+        <div>
+          <p style={{ color: 'white', fontWeight: '700', fontSize: '18px' }}>
+            Frank<span style={{ color: '#a855f7' }}>.</span>dev
           </p>
-          <p className="text-gray-500 text-sm mt-1">
-            Estudiante de Ingeniería en Sistemas · Piedecuesta, Colombia
-          </p>
+          <p style={{ color: '#6b7280', fontSize: '13px', marginTop: '4px' }}>{t.footer.subtitulo}</p>
         </div>
-
-        {/* Links */}
-        <div className="flex gap-6">
-          <a
-            href="https://github.com/D0nFrancisco"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
-          >
-            GitHub
-          </a>
-          <a
-            href="https://www.instagram.com/frank17_g/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
-          >
-            Instagram
-          </a>
-          <a
-            href="mailto:fdavid1704@gmail.com"
-            className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
-          >
-            Email
-          </a>
+        <div style={{ display: 'flex', gap: '24px' }}>
+          {[
+            { label: 'GitHub', href: 'https://github.com/D0nFrancisco' },
+            { label: 'Instagram', href: 'https://www.instagram.com/frank17_g/' },
+            { label: 'Email', href: 'mailto:fdavid1704@gmail.com' },
+          ].map((link) => (
+            <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
+              style={{ color: '#6b7280', textDecoration: 'none', fontSize: '14px', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#c084fc'}
+              onMouseLeave={e => e.currentTarget.style.color = '#6b7280'}>
+              {link.label}
+            </a>
+          ))}
         </div>
-
-        {/* Copyright */}
-        <p className="text-gray-600 text-sm">
-          © {anio} Frank Gualdron. Todos los derechos reservados.
+        <p style={{ color: '#4b5563', fontSize: '13px' }}>
+          © {anio} Frank Gualdron. {t.footer.derechos}
         </p>
-
       </div>
     </footer>
   )
