@@ -4,6 +4,8 @@ import HeroSection from '@/components/HeroSection'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useLang } from '@/context/LangContext'
+import Terminal from '@/components/Terminal'
+import CounterStat from '@/components/CounterStat'
 
 export default function Home() {
   const { t } = useLang()
@@ -82,14 +84,12 @@ export default function Home() {
                 style={{
                   background: hovStat === stat.texto ? 'rgba(168,85,247,0.08)' : 'rgba(255,255,255,0.03)',
                   border: hovStat === stat.texto ? '1px solid rgba(168,85,247,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '16px', padding: '24px', textAlign: 'center',
+                  borderRadius: '16px', padding: '24px',
                   transition: 'all 0.2s',
                   transform: hovStat === stat.texto ? 'translateY(-4px)' : 'translateY(0)',
                   cursor: 'default'
                 }}>
-                <div style={{ fontSize: '28px', marginBottom: '8px' }}>{stat.emoji}</div>
-                <div style={{ fontSize: '1.8rem', fontWeight: '700', color: 'white', marginBottom: '4px' }}>{stat.numero}</div>
-                <div style={{ color: '#6b7280', fontSize: '13px' }}>{stat.texto}</div>
+                <CounterStat numero={stat.numero} texto={stat.texto} emoji={stat.emoji} />
               </div>
             ))}
           </div>
@@ -126,6 +126,8 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      <Terminal />
     </main>
   )
 }
