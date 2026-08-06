@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio — Frank Gualdron
 
-## Getting Started
+Personal portfolio built with Next.js (App Router), TypeScript, and Tailwind CSS v4.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** (App Router, Server Actions, Server Components by default)
+- **TypeScript** — strict mode, no untyped files
+- **Tailwind CSS v4** — theme tokens (light/dark) in `app/globals.css`, no ad-hoc inline styles
+- **motion** — scroll-reveal only, via `components/motion/Reveal.tsx`
+- **zod** — contact form validation
+- **lucide-react** — icon set (brand logos for GitHub/LinkedIn are local SVGs in `components/icons`, since lucide dropped trademarked marks)
+
+## Structure
+
+```
+app/            routes, metadata, SEO file conventions (robots, sitemap, manifest, OG images)
+components/     ui/ (primitives) · layout/ · home/ · work/ · contact/ · motion/
+content/        typed content modules (profile.ts, projects.ts) — no CMS, no MDX
+lib/            validation, structured data, small utilities
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+See `PORTFOLIO_AUDIT.md` and `REDESIGN_PLAN.md` for the reasoning behind this structure.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Getting started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Before deploying
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A few things are intentionally left as placeholders — grep for `TODO` or check:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `content/profile.ts` — LinkedIn URL is a placeholder
+- `lib/site.ts` — `siteUrl` is a placeholder, used for `metadataBase`, sitemap and robots
+- `content/projects.ts` — case-study challenges/learnings are a first draft; review before publishing
+- No resume/CV is linked yet
 
-## Deploy on Vercel
+## Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` — start the dev server
+- `npm run build` — production build
+- `npm run start` — run the production build
+- `npm run lint` — ESLint

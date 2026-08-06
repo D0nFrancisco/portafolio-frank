@@ -5,6 +5,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { themeInitScript } from "@/lib/theme-script";
 import { profile } from "@/content/profile";
+import { siteUrl } from "@/lib/site";
+import { personJsonLd } from "@/lib/structured-data";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrainsMono = JetBrains_Mono({
@@ -13,9 +15,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-// TODO: set to the real production domain before deploying.
-const siteUrl = "https://example.com";
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -23,6 +22,14 @@ export const metadata: Metadata = {
     template: `%s — ${profile.name}`,
   },
   description: profile.tagline,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: profile.name,
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }}
+        />
       </head>
       <body className="font-sans antialiased">
         <a
