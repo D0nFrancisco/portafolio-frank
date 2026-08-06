@@ -3,13 +3,21 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { navLinks } from "@/lib/nav-links";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // The header has backdrop-blur, which — like any CSS filter — creates a
+  // new containing block for `position: fixed` descendants. That silently
+  // shrank this panel to the header's own box instead of the viewport, so
+  // it's portaled to <body> to escape that ancestor entirely.
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!open) return;
@@ -63,40 +71,43 @@ export function MobileNav() {
         <Menu className="h-4 w-4" aria-hidden="true" />
       </button>
 
-      {open ? (
-        <div
-          ref={panelRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Site menu"
-          className="fixed inset-0 z-50 bg-bg"
-        >
-          <div className="flex items-center justify-between px-6 py-4">
-            <span className="font-mono text-sm text-fg-muted">Menu</span>
-            <button
-              ref={closeButtonRef}
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Close menu"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
+      {open && mounted
+        ? createPortal(
+            <div
+              ref={panelRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site menu"
+              className="fixed inset-0 z-50 bg-bg"
             >
-              <X className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
-          <nav className="flex flex-col gap-1 px-6 py-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-lg font-medium text-fg hover:bg-bg-subtle"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      ) : null}
+              <div className="flex items-center justify-between px-6 py-4">
+                <span className="font-mono text-sm text-fg-muted">Menu</span>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+              <nav className="flex flex-col gap-1 px-6 py-4">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-3 text-lg font-medium text-fg hover:bg-bg-subtle"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
