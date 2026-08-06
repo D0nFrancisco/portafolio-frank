@@ -19,6 +19,7 @@
   --color-accent: #1d4ed8;
   --color-accent-fg: #ffffff;
   --color-accent-subtle: #eef2ff;
+  --color-danger: #b91c1c;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
@@ -38,6 +39,7 @@
   --color-accent: #7c93ff;
   --color-accent-fg: #0a0a0b;
   --color-accent-subtle: #172033;
+  --color-danger: #f87171;
 }
 
 @media (prefers-reduced-motion: reduce) {
