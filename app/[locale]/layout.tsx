@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import "../globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { ThemeSync } from "@/components/layout/ThemeSync";
 import { themeInitScript } from "@/lib/theme-script";
 import { getProfile } from "@/content/profile";
 import { siteUrl } from "@/lib/site";
@@ -82,10 +83,11 @@ export default async function LocaleLayout({
           is a client-side transition through this same layout, and React
           warns when a plain <script> is reconciled into an already-live DOM
           on the client instead of parsed from the initial HTML. next/script
-          tracks each script by id and skips re-injecting it, which is
-          exactly right here — the theme is already correct going into a
-          locale switch, and JSON-LD only needs to be accurate in the
-          server-rendered HTML a crawler actually requests.
+          tracks each script by id and skips re-injecting it, which is right
+          for JSON-LD (it only needs to be accurate in the server-rendered
+          HTML a crawler actually requests) — theme correctness on later
+          navigations is handled separately by <ThemeSync>, not by this
+          script re-running.
         */}
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
@@ -100,6 +102,7 @@ export default async function LocaleLayout({
       </head>
       <body className="font-sans antialiased">
         <NextIntlClientProvider>
+          <ThemeSync />
           <a
             href="#main-content"
             className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-lg focus-visible:bg-accent focus-visible:px-4 focus-visible:py-2 focus-visible:text-accent-fg"
