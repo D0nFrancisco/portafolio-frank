@@ -2,7 +2,11 @@
 
 import { contactFormSchema } from "@/lib/validation";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mbdqrqyo";
+// Formspree form IDs aren't secret (they're the public POST target of a
+// plain HTML form), so a hardcoded fallback is safe — the env var just
+// makes it possible to point a preview/staging deploy at a different form
+// without a code change.
+const FORMSPREE_ENDPOINT = process.env.FORMSPREE_ENDPOINT ?? "https://formspree.io/f/mbdqrqyo";
 
 export type ContactFormState = {
   status: "idle" | "success" | "error";
