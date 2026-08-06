@@ -1,8 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/Badge";
 import type { Project } from "@/content/projects";
+import type { AppLocale } from "@/i18n/routing";
 
-export function CaseStudyHeader({ project }: { project: Project }) {
+export async function CaseStudyHeader({ project, locale }: { project: Project; locale: AppLocale }) {
+  const t = await getTranslations({ locale, namespace: "caseStudy" });
+
   return (
     <header className="border-b border-border pb-10">
       <h1 className="text-3xl font-semibold tracking-tight text-fg sm:text-4xl">{project.name}</h1>
@@ -21,7 +25,7 @@ export function CaseStudyHeader({ project }: { project: Project }) {
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-fg transition-colors hover:text-accent"
         >
-          View source on GitHub
+          {t("viewSource")}
           <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
         </a>
         {project.demo ? (
@@ -31,7 +35,7 @@ export function CaseStudyHeader({ project }: { project: Project }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-fg transition-colors hover:text-accent"
           >
-            Live demo
+            {t("liveDemo")}
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </a>
         ) : null}

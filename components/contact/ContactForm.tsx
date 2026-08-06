@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import { submitContactForm, type ContactFormState } from "@/app/contact/actions";
+import { useTranslations } from "next-intl";
+import { submitContactForm, type ContactFormState } from "@/app/[locale]/contact/actions";
 
 const initialState: ContactFormState = { status: "idle" };
 
@@ -9,12 +10,13 @@ const inputClasses =
   "w-full rounded-lg border border-border bg-bg px-4 py-2.5 text-sm text-fg outline-none transition-colors focus-visible:border-accent";
 
 export function ContactForm() {
+  const t = useTranslations("contactForm");
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
 
   if (state.status === "success") {
     return (
       <div role="status" aria-live="polite" className="rounded-xl border border-border p-10 text-center">
-        <p className="text-lg font-medium text-fg">Message sent.</p>
+        <p className="text-lg font-medium text-fg">{t("sentTitle")}</p>
         <p className="mt-2 text-sm text-fg-muted">{state.message}</p>
       </div>
     );
@@ -30,14 +32,14 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="name" className="mb-2 block text-sm font-medium text-fg">
-          Name
+          {t("name")}
         </label>
         <input
           id="name"
           name="name"
           type="text"
           autoComplete="name"
-          placeholder="Jane Doe"
+          placeholder={t("namePlaceholder")}
           aria-invalid={Boolean(state.errors?.name)}
           aria-describedby={state.errors?.name ? "name-error" : undefined}
           className={inputClasses}
@@ -51,14 +53,14 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="email" className="mb-2 block text-sm font-medium text-fg">
-          Email
+          {t("email")}
         </label>
         <input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
-          placeholder="you@company.com"
+          placeholder={t("emailPlaceholder")}
           aria-invalid={Boolean(state.errors?.email)}
           aria-describedby={state.errors?.email ? "email-error" : undefined}
           className={inputClasses}
@@ -72,13 +74,13 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="message" className="mb-2 block text-sm font-medium text-fg">
-          Message
+          {t("message")}
         </label>
         <textarea
           id="message"
           name="message"
           rows={5}
-          placeholder="Tell me about the role, the team, and what you're looking for."
+          placeholder={t("messagePlaceholder")}
           aria-invalid={Boolean(state.errors?.message)}
           aria-describedby={state.errors?.message ? "message-error" : undefined}
           className={`${inputClasses} resize-none`}
@@ -101,7 +103,7 @@ export function ContactForm() {
         disabled={isPending}
         className="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-accent-fg transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-        {isPending ? "Sending…" : "Send message"}
+        {isPending ? t("sending") : t("send")}
       </button>
     </form>
   );

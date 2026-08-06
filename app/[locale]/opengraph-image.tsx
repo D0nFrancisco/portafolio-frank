@@ -1,11 +1,23 @@
 import { ImageResponse } from "next/og";
-import { profile } from "@/content/profile";
+import { getProfile } from "@/content/profile";
 import { OG_IMAGE_SIZE, OG_CONTENT_TYPE, OG_COLORS, OgFrame } from "@/lib/og-image";
+import { routing, type AppLocale } from "@/i18n/routing";
 
 export const size = OG_IMAGE_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
-export default function OpengraphImage() {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function OpengraphImage({
+  params,
+}: {
+  params: Promise<{ locale: AppLocale }>;
+}) {
+  const { locale } = await params;
+  const profile = getProfile(locale);
+
   return new ImageResponse(
     (
       <OgFrame>

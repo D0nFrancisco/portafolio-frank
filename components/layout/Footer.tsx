@@ -1,10 +1,12 @@
 import { Mail } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { GithubIcon, LinkedinIcon } from "@/components/icons/BrandIcons";
 import { BackToTop } from "@/components/layout/BackToTop";
-import { profile } from "@/content/profile";
+import { getProfile } from "@/content/profile";
 import { cn } from "@/lib/cn";
 import { iconButtonBase } from "@/lib/styles";
+import type { AppLocale } from "@/i18n/routing";
 
 const socialIcons = {
   github: GithubIcon,
@@ -12,7 +14,9 @@ const socialIcons = {
   email: Mail,
 } as const;
 
-export function Footer() {
+export async function Footer({ locale }: { locale: AppLocale }) {
+  const profile = getProfile(locale);
+  const t = await getTranslations({ locale, namespace: "footer" });
   const year = new Date().getFullYear();
 
   return (
@@ -43,8 +47,8 @@ export function Footer() {
         </div>
       </Container>
       <Container className="flex flex-col gap-2 border-t border-border py-6 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
-        <p>© {year} {profile.name}. All rights reserved.</p>
-        <BackToTop />
+        <p>© {year} {profile.name}. {t("rights")}</p>
+        <BackToTop label={t("backToTop")} />
       </Container>
     </footer>
   );

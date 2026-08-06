@@ -1,15 +1,20 @@
+import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/motion/Reveal";
-import { profile } from "@/content/profile";
+import { getProfile } from "@/content/profile";
+import type { AppLocale } from "@/i18n/routing";
 
-export function About() {
+export async function About({ locale }: { locale: AppLocale }) {
+  const profile = getProfile(locale);
+  const t = await getTranslations({ locale, namespace: "about" });
+
   return (
     <section id="about" className="scroll-mt-16 border-b border-border py-20">
       <Container>
         <Reveal>
-          <SectionHeading eyebrow="About" title="What I work on" />
+          <SectionHeading eyebrow={t("eyebrow")} title={t("title")} />
         </Reveal>
 
         <div className="mt-10 grid gap-12 sm:grid-cols-[1.3fr_1fr]">

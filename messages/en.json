@@ -1,0 +1,109 @@
+{
+  "skipToContent": "Skip to content",
+  "nav": {
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "subtext": "Based in {location}, open to remote roles. I build small, complete systems end to end — automation scripts, REST APIs, and the interfaces in front of them — and write up how each one works.",
+    "viewWork": "View work",
+    "getInTouch": "Get in touch"
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "What I work on"
+  },
+  "featuredWork": {
+    "eyebrow": "Selected work",
+    "title": "Three projects across systems, backend, and frontend",
+    "description": "Each one is written up as a full case study: the problem, the approach, and what was hard about it.",
+    "viewAll": "View all work"
+  },
+  "work": {
+    "eyebrow": "Work",
+    "title": "What I've built",
+    "description": "Each one includes the problem, the approach, the real challenges, and what I learned building it.",
+    "metaTitle": "Work",
+    "metaDescription": "Case studies for every project: the problem, the approach, and what I learned building it."
+  },
+  "caseStudy": {
+    "allWork": "All work",
+    "viewSource": "View source on GitHub",
+    "liveDemo": "Live demo",
+    "problem": "Problem",
+    "approach": "Approach",
+    "challenges": "Challenges",
+    "result": "Result",
+    "learnings": "What I learned",
+    "nextProject": "Next project"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's talk",
+    "description": "Tell me a bit about the role or the problem — I'll reply from this same address.",
+    "metaTitle": "Contact",
+    "metaDescription": "Get in touch with {name}.",
+    "channelEmail": "Email",
+    "channelGithub": "GitHub",
+    "channelLinkedin": "LinkedIn",
+    "channelLocation": "Location"
+  },
+  "contactForm": {
+    "name": "Name",
+    "namePlaceholder": "Jane Doe",
+    "email": "Email",
+    "emailPlaceholder": "you@company.com",
+    "message": "Message",
+    "messagePlaceholder": "Tell me about the role, the team, and what you're looking for.",
+    "send": "Send message",
+    "sending": "Sending…",
+    "sentTitle": "Message sent.",
+    "sentBody": "Thanks — I'll get back to you soon.",
+    "genericError": "Something went wrong sending that. Try emailing me directly instead.",
+    "fixFields": "Please fix the fields below."
+  },
+  "validation": {
+    "nameRequired": "Enter your name.",
+    "nameTooLong": "That name is too long.",
+    "emailRequired": "Enter your email.",
+    "emailInvalid": "Enter a valid email address.",
+    "messageTooShort": "Say a bit more — at least 10 characters.",
+    "messageTooLong": "That message is too long."
+  },
+  "contactCta": {
+    "title": "Have something that needs building?",
+    "body": "I'm open to backend, systems, or full-stack roles. The fastest way to reach me is email — I read every message.",
+    "getInTouch": "Get in touch"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "backToTop": "Back to top"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist or has moved.",
+    "backHome": "Back to home"
+  },
+  "error": {
+    "eyebrow": "Error",
+    "title": "Something went wrong",
+    "body": "That page hit an unexpected error. You can try again, or head back home.",
+    "tryAgain": "Try again"
+  },
+  "mobileNav": {
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "themeToggle": {
+    "toLight": "Switch to light theme",
+    "toDark": "Switch to dark theme"
+  },
+  "langSwitcher": {
+    "label": "Select language",
+    "en": "English",
+    "es": "Español"
+  }
+}

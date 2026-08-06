@@ -1,6 +1,7 @@
 "use server";
 
-import { contactFormSchema } from "@/lib/validation";
+import { getTranslations } from "next-intl/server";
+import { getContactFormSchema } from "@/lib/validation";
 
 // Formspree form IDs aren't secret (they're the public POST target of a
 // plain HTML form), so a hardcoded fallback is safe — the env var just
@@ -18,13 +19,18 @@ export async function submitContactForm(
   _prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  const [tValidation, tForm] = await Promise.all([
+    getTranslations("validation"),
+    getTranslations("contactForm"),
+  ]);
+
   // Honeypot: real users never fill a field hidden from view. Bots that
   // fill every input do — quietly accept without sending anything.
   if (formData.get("company")) {
-    return { status: "success", message: "Thanks — I'll get back to you soon." };
+    return { status: "success", message: tForm("sentBody") };
   }
 
-  const parsed = contactFormSchema.safeParse({
+  const parsed = getContactFormSchema(tValidation).safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     message: formData.get("message"),
@@ -34,7 +40,7 @@ export async function submitContactForm(
     const fieldErrors = parsed.error.flatten().fieldErrors;
     return {
       status: "error",
-      message: "Please fix the fields below.",
+      message: tForm("fixFields"),
       errors: {
         name: fieldErrors.name?.[0],
         email: fieldErrors.email?.[0],
@@ -51,17 +57,11 @@ export async function submitContactForm(
     });
 
     if (!response.ok) {
-      return {
-        status: "error",
-        message: "Something went wrong sending that. Try emailing me directly instead.",
-      };
+      return { status: "error", message: tForm("genericError") };
     }
 
-    return { status: "success", message: "Thanks — I'll get back to you soon." };
+    return { status: "success", message: tForm("sentBody") };
   } catch {
-    return {
-      status: "error",
-      message: "Something went wrong sending that. Try emailing me directly instead.",
-    };
+    return { status: "error", message: tForm("genericError") };
   }
 }

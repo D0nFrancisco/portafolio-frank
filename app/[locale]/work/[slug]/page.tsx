@@ -1,38 +1,49 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { Container } from "@/components/ui/Container";
 import { CaseStudyHeader } from "@/components/work/CaseStudyHeader";
 import { CaseStudyBody } from "@/components/work/CaseStudyBody";
-import { projects, getProjectBySlug, getProjectStaticParams, type ProjectParams } from "@/content/projects";
+import { getProjects, getProjectBySlug, getProjectSlugParams } from "@/content/projects";
+import { localeAlternates } from "@/lib/alternates";
 import { cn } from "@/lib/cn";
 import { cardHoverClass } from "@/lib/styles";
+import type { AppLocale } from "@/i18n/routing";
 
-export { getProjectStaticParams as generateStaticParams };
+type Params = { locale: AppLocale; slug: string };
+
+export function generateStaticParams(): { slug: string }[] {
+  return getProjectSlugParams();
+}
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<ProjectParams>;
+  params: Promise<Params>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const { locale, slug } = await params;
+  const project = getProjectBySlug(locale, slug);
   if (!project) return {};
 
   return {
     title: project.name,
     description: project.oneLiner,
+    alternates: { languages: localeAlternates(`/work/${slug}`) },
   };
 }
 
-export default async function CaseStudyPage({ params }: { params: Promise<ProjectParams> }) {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
+export default async function CaseStudyPage({ params }: { params: Promise<Params> }) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
 
+  const project = getProjectBySlug(locale, slug);
   if (!project) notFound();
 
-  const nextProject = projects[(projects.indexOf(project) + 1) % projects.length];
+  const projects = getProjects(locale);
+  const nextProject = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
+  const t = await getTranslations({ locale, namespace: "caseStudy" });
 
   return (
     <Container as="article" className="py-20">
@@ -41,11 +52,11 @@ export default async function CaseStudyPage({ params }: { params: Promise<Projec
         className="mb-10 inline-flex items-center gap-1.5 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
       >
         <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-        All work
+        {t("allWork")}
       </Link>
 
-      <CaseStudyHeader project={project} />
-      <CaseStudyBody project={project} />
+      <CaseStudyHeader project={project} locale={locale} />
+      <CaseStudyBody project={project} locale={locale} />
 
       <div className="mt-4 border-t border-border pt-10">
         <Link
@@ -53,7 +64,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Projec
           className={cn("group flex items-center justify-between gap-4", cardHoverClass)}
         >
           <div>
-            <p className="text-xs text-fg-subtle">Next project</p>
+            <p className="text-xs text-fg-subtle">{t("nextProject")}</p>
             <p className="mt-1 text-lg font-semibold text-fg">{nextProject.name}</p>
           </div>
           <ArrowRight

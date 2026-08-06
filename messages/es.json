@@ -1,0 +1,109 @@
+{
+  "skipToContent": "Saltar al contenido",
+  "nav": {
+    "work": "Proyectos",
+    "about": "Sobre mí",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "subtext": "Radicado en {location}, abierto a roles remotos. Construyo sistemas pequeños y completos de principio a fin — scripts de automatización, APIs REST y las interfaces frente a ellos — y documento cómo funciona cada uno.",
+    "viewWork": "Ver proyectos",
+    "getInTouch": "Contactar"
+  },
+  "about": {
+    "eyebrow": "Sobre mí",
+    "title": "En qué trabajo"
+  },
+  "featuredWork": {
+    "eyebrow": "Proyectos destacados",
+    "title": "Tres proyectos entre sistemas, backend y frontend",
+    "description": "Cada uno está documentado como un caso de estudio completo: el problema, el enfoque y lo que fue difícil de resolver.",
+    "viewAll": "Ver todos los proyectos"
+  },
+  "work": {
+    "eyebrow": "Proyectos",
+    "title": "Lo que he construido",
+    "description": "Cada uno incluye el problema, el enfoque, los retos reales y lo que aprendí construyéndolo.",
+    "metaTitle": "Proyectos",
+    "metaDescription": "Casos de estudio de cada proyecto: el problema, el enfoque y lo que aprendí construyéndolo."
+  },
+  "caseStudy": {
+    "allWork": "Todos los proyectos",
+    "viewSource": "Ver código en GitHub",
+    "liveDemo": "Demo en vivo",
+    "problem": "Problema",
+    "approach": "Enfoque",
+    "challenges": "Retos",
+    "result": "Resultado",
+    "learnings": "Qué aprendí",
+    "nextProject": "Siguiente proyecto"
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "title": "Hablemos",
+    "description": "Cuéntame un poco sobre el rol o el problema — te responderé desde esta misma dirección.",
+    "metaTitle": "Contacto",
+    "metaDescription": "Ponte en contacto con {name}.",
+    "channelEmail": "Correo",
+    "channelGithub": "GitHub",
+    "channelLinkedin": "LinkedIn",
+    "channelLocation": "Ubicación"
+  },
+  "contactForm": {
+    "name": "Nombre",
+    "namePlaceholder": "María Pérez",
+    "email": "Correo electrónico",
+    "emailPlaceholder": "tu@empresa.com",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntame sobre el rol, el equipo y qué estás buscando.",
+    "send": "Enviar mensaje",
+    "sending": "Enviando…",
+    "sentTitle": "Mensaje enviado.",
+    "sentBody": "Gracias — te responderé pronto.",
+    "genericError": "Algo salió mal al enviarlo. Intenta escribirme directamente por correo.",
+    "fixFields": "Corrige los campos señalados abajo."
+  },
+  "validation": {
+    "nameRequired": "Escribe tu nombre.",
+    "nameTooLong": "Ese nombre es demasiado largo.",
+    "emailRequired": "Escribe tu correo.",
+    "emailInvalid": "Escribe un correo electrónico válido.",
+    "messageTooShort": "Cuéntame un poco más — al menos 10 caracteres.",
+    "messageTooLong": "Ese mensaje es demasiado largo."
+  },
+  "contactCta": {
+    "title": "¿Tienes algo que construir?",
+    "body": "Estoy abierto a roles de backend, sistemas o full-stack. La forma más rápida de contactarme es por correo — leo todos los mensajes.",
+    "getInTouch": "Contactar"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados.",
+    "backToTop": "Volver arriba"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Página no encontrada",
+    "body": "La página que buscas no existe o fue movida.",
+    "backHome": "Volver al inicio"
+  },
+  "error": {
+    "eyebrow": "Error",
+    "title": "Algo salió mal",
+    "body": "Esa página tuvo un error inesperado. Puedes intentarlo de nuevo o volver al inicio.",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "mobileNav": {
+    "menu": "Menú",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "themeToggle": {
+    "toLight": "Cambiar a tema claro",
+    "toDark": "Cambiar a tema oscuro"
+  },
+  "langSwitcher": {
+    "label": "Seleccionar idioma",
+    "en": "English",
+    "es": "Español"
+  }
+}

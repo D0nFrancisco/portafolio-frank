@@ -1,15 +1,19 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "@/i18n/routing";
 import { navLinks } from "@/lib/nav-links";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { LangSwitcher } from "@/components/layout/LangSwitcher";
 import { cn } from "@/lib/cn";
 import { iconButtonBase } from "@/lib/styles";
 
 export function MobileNav() {
+  const t = useTranslations("mobileNav");
+  const tNav = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -19,7 +23,11 @@ export function MobileNav() {
   // The header has backdrop-blur, which — like any CSS filter — creates a
   // new containing block for `position: fixed` descendants. That silently
   // shrank this panel to the header's own box instead of the viewport, so
-  // it's portaled to <body> to escape that ancestor entirely.
+  // it's portaled to <body> to escape that ancestor entirely. `document`
+  // doesn't exist during SSR, so the portal target is only available after
+  // mount — this is the standard React pattern for that, not state that
+  // belongs in a render.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
@@ -67,7 +75,7 @@ export function MobileNav() {
         ref={openButtonRef}
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open menu"
+        aria-label={t("openMenu")}
         aria-expanded={open}
         className={cn(iconButtonBase, "text-fg")}
       >
@@ -80,18 +88,19 @@ export function MobileNav() {
               ref={panelRef}
               role="dialog"
               aria-modal="true"
-              aria-label="Site menu"
+              aria-label={t("menu")}
               className="fixed inset-0 z-50 bg-bg"
             >
               <div className="flex items-center justify-between px-6 py-4">
-                <span className="font-mono text-sm text-fg-muted">Menu</span>
+                <span className="font-mono text-sm text-fg-muted">{t("menu")}</span>
                 <div className="flex items-center gap-3">
+                  <LangSwitcher />
                   <ThemeToggle />
                   <button
                     ref={closeButtonRef}
                     type="button"
                     onClick={() => setOpen(false)}
-                    aria-label="Close menu"
+                    aria-label={t("closeMenu")}
                     className={cn(iconButtonBase, "text-fg")}
                   >
                     <X className="h-4 w-4" aria-hidden="true" />
@@ -106,7 +115,7 @@ export function MobileNav() {
                     onClick={() => setOpen(false)}
                     className="rounded-lg px-3 py-3 text-lg font-medium text-fg hover:bg-bg-subtle"
                   >
-                    {link.label}
+                    {tNav(link.key)}
                   </Link>
                 ))}
               </nav>

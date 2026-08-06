@@ -1,9 +1,14 @@
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { profile } from "@/content/profile";
+import { getProfile } from "@/content/profile";
+import type { AppLocale } from "@/i18n/routing";
 
-export function Hero() {
+export async function Hero({ locale }: { locale: AppLocale }) {
+  const profile = getProfile(locale);
+  const t = await getTranslations({ locale, namespace: "hero" });
+
   return (
     <section className="border-b border-border">
       <Container className="flex min-h-[70vh] flex-col justify-center gap-6 py-20">
@@ -12,23 +17,21 @@ export function Hero() {
           {profile.tagline}
         </h1>
         <p className="max-w-xl text-base leading-relaxed text-fg-muted">
-          Based in {profile.location}, open to remote roles. I build small,
-          complete systems end to end — automation scripts, REST APIs, and
-          the interfaces in front of them — and write up how each one works.
+          {t("subtext", { location: profile.location })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-4">
           <Link
             href="/work"
             className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-accent-fg transition-opacity hover:opacity-90"
           >
-            View work
+            {t("viewWork")}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 rounded-lg border border-border-strong px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-bg-subtle"
           >
-            Get in touch
+            {t("getInTouch")}
           </Link>
         </div>
       </Container>
