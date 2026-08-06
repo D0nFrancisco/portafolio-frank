@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { navLinks } from "@/lib/nav-links";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { cn } from "@/lib/cn";
+import { iconButtonBase } from "@/lib/styles";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -67,7 +69,7 @@ export function MobileNav() {
         onClick={() => setOpen(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
+        className={cn(iconButtonBase, "text-fg")}
       >
         <Menu className="h-4 w-4" aria-hidden="true" />
       </button>
@@ -90,7 +92,7 @@ export function MobileNav() {
                     type="button"
                     onClick={() => setOpen(false)}
                     aria-label="Close menu"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
+                    className={cn(iconButtonBase, "text-fg")}
                   >
                     <X className="h-4 w-4" aria-hidden="true" />
                   </button>

@@ -5,21 +5,19 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { CaseStudyHeader } from "@/components/work/CaseStudyHeader";
 import { CaseStudyBody } from "@/components/work/CaseStudyBody";
-import { projects } from "@/content/projects";
+import { projects, getProjectBySlug, getProjectStaticParams, type ProjectParams } from "@/content/projects";
+import { cn } from "@/lib/cn";
+import { cardHoverClass } from "@/lib/styles";
 
-type Params = { slug: string };
-
-export function generateStaticParams(): Params[] {
-  return projects.map((project) => ({ slug: project.slug }));
-}
+export { getProjectStaticParams as generateStaticParams };
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<Params>;
+  params: Promise<ProjectParams>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = getProjectBySlug(slug);
   if (!project) return {};
 
   return {
@@ -28,9 +26,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaseStudyPage({ params }: { params: Promise<Params> }) {
+export default async function CaseStudyPage({ params }: { params: Promise<ProjectParams> }) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = getProjectBySlug(slug);
 
   if (!project) notFound();
 
@@ -52,7 +50,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
       <div className="mt-4 border-t border-border pt-10">
         <Link
           href={`/work/${nextProject.slug}`}
-          className="group flex items-center justify-between gap-4 rounded-xl border border-border p-6 transition-colors hover:border-border-strong"
+          className={cn("group flex items-center justify-between gap-4", cardHoverClass)}
         >
           <div>
             <p className="text-xs text-fg-subtle">Next project</p>

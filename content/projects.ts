@@ -64,8 +64,8 @@ export const projects: Project[] = [
     oneLiner:
       "A bilingual Next.js weather app with autocomplete search, automatic geolocation, and a 5-day forecast, deployed on Vercel.",
     stack: ["Next.js 14", "Tailwind CSS v4", "OpenWeatherMap API", "Vercel"],
-    // TODO: add the live Vercel URL once the current version is deployed.
     github: "https://github.com/D0nFrancisco/weathernow",
+    // demo: "", // TODO: add the live Vercel URL once the current version is deployed.
     problem:
       "I wanted a real frontend project built on a third-party API, with a bilingual interface and the features people expect from a weather app, not just a single hardcoded city lookup.",
     approach:
@@ -81,3 +81,15 @@ export const projects: Project[] = [
       "Bilingual UI and location-aware features change how you think about a user's entry point. A real visit starts from their location or a search, not a hardcoded city typed into a demo.",
   },
 ];
+
+export type ProjectParams = { slug: string };
+
+export function getProjectBySlug(slug: string): Project | undefined {
+  return projects.find((project) => project.slug === slug);
+}
+
+// Shared by app/work/[slug]/page.tsx and its opengraph-image.tsx sibling —
+// both need the same slug list for static generation.
+export function getProjectStaticParams(): ProjectParams[] {
+  return projects.map((project) => ({ slug: project.slug }));
+}

@@ -2,13 +2,12 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import type { Project } from "@/content/projects";
+import { cn } from "@/lib/cn";
+import { cardHoverClass } from "@/lib/styles";
 
 export function ProjectCard({ project }: { project: Project }) {
   return (
-    <Link
-      href={`/work/${project.slug}`}
-      className="group flex flex-col gap-4 rounded-xl border border-border p-6 transition-colors hover:border-border-strong"
-    >
+    <Link href={`/work/${project.slug}`} className={cn("group flex flex-col gap-4", cardHoverClass)}>
       <div className="flex items-start justify-between gap-4">
         <h3 className="text-lg font-semibold text-fg">{project.name}</h3>
         <ArrowUpRight

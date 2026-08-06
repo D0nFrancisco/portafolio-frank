@@ -3,6 +3,8 @@ import { Container } from "@/components/ui/Container";
 import { GithubIcon, LinkedinIcon } from "@/components/icons/BrandIcons";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { profile } from "@/content/profile";
+import { cn } from "@/lib/cn";
+import { iconButtonBase } from "@/lib/styles";
 
 const socialIcons = {
   github: GithubIcon,
@@ -32,7 +34,7 @@ export function Footer() {
                 target={key === "email" ? undefined : "_blank"}
                 rel={key === "email" ? undefined : "noopener noreferrer"}
                 aria-label={link.label}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg-muted transition-colors hover:text-fg"
+                className={cn(iconButtonBase, "text-fg-muted transition-colors hover:text-fg")}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
               </a>
