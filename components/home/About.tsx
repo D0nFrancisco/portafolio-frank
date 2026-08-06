@@ -9,7 +9,7 @@ export function About() {
     <section id="about" className="scroll-mt-16 border-b border-border py-20">
       <Container>
         <Reveal>
-          <SectionHeading eyebrow="About" title="What I actually work on" />
+          <SectionHeading eyebrow="About" title="What I work on" />
         </Reveal>
 
         <div className="mt-10 grid gap-12 sm:grid-cols-[1.3fr_1fr]">

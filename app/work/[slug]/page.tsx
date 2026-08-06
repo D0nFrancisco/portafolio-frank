@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { CaseStudyHeader } from "@/components/work/CaseStudyHeader";
 import { CaseStudyBody } from "@/components/work/CaseStudyBody";
@@ -34,6 +34,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
   if (!project) notFound();
 
+  const nextProject = projects[(projects.indexOf(project) + 1) % projects.length];
+
   return (
     <Container as="article" className="py-20">
       <Link
@@ -46,6 +48,22 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
 
       <CaseStudyHeader project={project} />
       <CaseStudyBody project={project} />
+
+      <div className="mt-4 border-t border-border pt-10">
+        <Link
+          href={`/work/${nextProject.slug}`}
+          className="group flex items-center justify-between gap-4 rounded-xl border border-border p-6 transition-colors hover:border-border-strong"
+        >
+          <div>
+            <p className="text-xs text-fg-subtle">Next project</p>
+            <p className="mt-1 text-lg font-semibold text-fg">{nextProject.name}</p>
+          </div>
+          <ArrowRight
+            className="h-4 w-4 flex-none text-fg-subtle transition-transform group-hover:translate-x-1"
+            aria-hidden="true"
+          />
+        </Link>
+      </div>
     </Container>
   );
 }

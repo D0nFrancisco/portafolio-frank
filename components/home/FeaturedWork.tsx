@@ -14,8 +14,8 @@ export function FeaturedWork() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Selected work"
-              title="Three projects, three different problems"
-              description="Each one is written up as a full case study — the problem, the approach, and what was actually hard about it."
+              title="Three projects across systems, backend, and frontend"
+              description="Each one is written up as a full case study: the problem, the approach, and what was hard about it."
             />
             <Link
               href="/work"

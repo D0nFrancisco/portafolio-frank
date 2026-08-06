@@ -12,10 +12,9 @@ export function Hero() {
           {profile.tagline}
         </h1>
         <p className="max-w-xl text-base leading-relaxed text-fg-muted">
-          Based in {profile.location} — open to remote roles. I build small,
-          complete systems end to end — the automation, the API, and the
-          interface in front of it — and document how each one actually
-          works.
+          Based in {profile.location}, open to remote roles. I build small,
+          complete systems end to end — automation scripts, REST APIs, and
+          the interfaces in front of them — and write up how each one works.
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-4">
           <Link

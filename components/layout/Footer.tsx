@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Mail } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { GithubIcon, LinkedinIcon } from "@/components/icons/BrandIcons";
+import { BackToTop } from "@/components/layout/BackToTop";
 import { profile } from "@/content/profile";
 
 const socialIcons = {
@@ -42,9 +42,7 @@ export function Footer() {
       </Container>
       <Container className="flex flex-col gap-2 border-t border-border py-6 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
         <p>© {year} {profile.name}. All rights reserved.</p>
-        <Link href="/#about" className="hover:text-fg-muted">
-          Back to top
-        </Link>
+        <BackToTop />
       </Container>
     </footer>
   );

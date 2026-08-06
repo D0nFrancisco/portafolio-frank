@@ -7,7 +7,7 @@ import { projects } from "@/content/projects";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Case studies for every project — the problem, the approach, and what was actually hard about it.",
+  description: "Case studies for every project: the problem, the approach, and what I learned building it.",
 };
 
 export default function WorkPage() {
@@ -16,8 +16,8 @@ export default function WorkPage() {
       <Reveal>
         <SectionHeading
           eyebrow="Work"
-          title="Case studies, not project cards"
-          description="Each project below includes the problem it solved, how it was built, what went wrong along the way, and what I'd do differently now."
+          title="What I've built"
+          description="Each one includes the problem, the approach, the real challenges, and what I learned building it."
         />
       </Reveal>
 

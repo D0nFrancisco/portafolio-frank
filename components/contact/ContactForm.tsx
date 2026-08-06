@@ -37,6 +37,7 @@ export function ContactForm() {
           name="name"
           type="text"
           autoComplete="name"
+          placeholder="Jane Doe"
           aria-invalid={Boolean(state.errors?.name)}
           aria-describedby={state.errors?.name ? "name-error" : undefined}
           className={inputClasses}
@@ -57,6 +58,7 @@ export function ContactForm() {
           name="email"
           type="email"
           autoComplete="email"
+          placeholder="you@company.com"
           aria-invalid={Boolean(state.errors?.email)}
           aria-describedby={state.errors?.email ? "email-error" : undefined}
           className={inputClasses}
@@ -76,6 +78,7 @@ export function ContactForm() {
           id="message"
           name="message"
           rows={5}
+          placeholder="Tell me about the role, the team, and what you're looking for."
           aria-invalid={Boolean(state.errors?.message)}
           aria-describedby={state.errors?.message ? "message-error" : undefined}
           className={`${inputClasses} resize-none`}

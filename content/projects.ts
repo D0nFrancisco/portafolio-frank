@@ -45,18 +45,18 @@ export const projects: Project[] = [
     stack: ["Java", "Spring Boot 3.2", "JPA / Hibernate", "PostgreSQL", "Maven"],
     github: "https://github.com/D0nFrancisco/taskflow",
     problem:
-      "I wanted to build a REST API with the structure of a real service, not just CRUD endpoints — with actual business rules, proper error handling, and clean layering — using task management as a domain simple enough to reason about end to end.",
+      "I wanted to build a REST API with the structure of a real service: proper business rules, real error handling, and clean layering, not just CRUD endpoints. Task management was a domain simple enough to reason about end to end.",
     approach:
-      "TaskFlow is a layered Spring Boot service using JPA/Hibernate over PostgreSQL, with standardized endpoints for creating, updating, filtering by status or priority, and querying overdue tasks. Deleting a task is a soft delete rather than a hard removal, state transitions follow explicit business rules instead of accepting any value, and the API validates input and handles exceptions globally instead of per endpoint.",
+      "TaskFlow is a layered Spring Boot service using JPA/Hibernate over PostgreSQL, with standardized endpoints for creating, updating, filtering by status or priority, and querying overdue tasks. Deleting a task is a soft delete rather than a hard removal. State transitions follow explicit business rules instead of accepting any value, and the API validates input and handles exceptions globally instead of per endpoint.",
     challenges: [
-      "Modeling state transitions as business rules instead of letting any status change through — deciding which transitions are actually valid for a task.",
+      "Modeling state transitions as business rules instead of letting any status change freely — deciding which transitions should even be allowed for a task.",
       "Soft delete changes how every other query has to behave: filtering, counting, and listing all need to account for records that are 'deleted' but still in the table.",
       "Keeping error handling and input validation consistent and centralized, instead of duplicated per endpoint.",
     ],
     result:
       "A REST API with layered architecture, real business rules around task state, soft delete, global exception handling, and standardized endpoints — including a dedicated query for overdue tasks.",
     learnings:
-      "Most of the design work in an API like this isn't the CRUD part — it's the rules around what a valid state transition is and how deletion should actually behave, which end up shaping almost every other endpoint.",
+      "The real design work in an API like this is the rules: what counts as a valid state transition, and how deletion should behave once records can be soft-deleted. Those decisions end up shaping almost every other endpoint.",
   },
   {
     slug: "weathernow",
@@ -67,17 +67,17 @@ export const projects: Project[] = [
     // TODO: add the live Vercel URL once the current version is deployed.
     github: "https://github.com/D0nFrancisco/weathernow",
     problem:
-      "I wanted a real frontend project built on a third-party API, with a bilingual interface and the features people actually expect from a weather app — not just a single hardcoded city lookup.",
+      "I wanted a real frontend project built on a third-party API, with a bilingual interface and the features people expect from a weather app, not just a single hardcoded city lookup.",
     approach:
       "WeatherNow is a Next.js 14 app styled with Tailwind CSS v4 that consumes the OpenWeatherMap API for current conditions and a 5-day forecast. It includes autocomplete city search, automatic geolocation on load, a Spanish/English interface, and a responsive layout, deployed to production on Vercel.",
     challenges: [
-      "Building a bilingual interface (Spanish/English) that covers every piece of UI text, not just the main content.",
+      "Covering every piece of UI text in both Spanish and English, including labels and error states, so the interface didn't end up half-translated.",
       "Wiring up automatic geolocation as a starting point while still supporting manual search with autocomplete as the primary flow.",
-      "Handling the practical side of shipping to production — environment configuration and deployment on Vercel, not just running it locally.",
+      "Handling the practical side of shipping to production: environment variables and deployment configuration on Vercel, which running it locally never required.",
     ],
     result:
       "A deployed, bilingual weather app with autocomplete search, geolocation, and a 5-day forecast — live on Vercel rather than only running locally.",
     learnings:
-      "Bilingual UI and location-aware features both push you to think about the app's actual entry points — where a real user starts (their location, a search) instead of just the happy path with one hardcoded city.",
+      "Bilingual UI and location-aware features change how you think about a user's entry point. A real visit starts from their location or a search, not a hardcoded city typed into a demo.",
   },
 ];

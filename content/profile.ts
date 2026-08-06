@@ -23,11 +23,11 @@ export type Profile = {
 export const profile: Profile = {
   name: "Frank Gualdrón",
   role: "Software Developer",
-  location: "Piedecuesta / Bucaramanga, Colombia",
+  location: "Bucaramanga, Colombia",
   email: "fdavid1704@gmail.com",
   tagline: "Software developer focused on backend, Linux, and web development.",
   summary: [
-    "I care about building software that's maintainable, well-structured, and built to last — scripts that keep running unattended, and APIs with validation and error handling that make sense to whoever calls them.",
+    "I care about building software that's maintainable, well-structured, and built to last. That means scripts that keep running unattended, and APIs with validation and error handling that make sense to whoever calls them.",
     "Most of what I've built so far is backend and systems work: Bash automation on Linux, a REST API in Java and Spring Boot backed by PostgreSQL, and a Next.js/Tailwind frontend to round out the stack.",
     "I'm currently studying Systems Development Technology at Unidades Tecnológicas de Santander, and building personal projects alongside it to put what I'm learning into practice.",
   ],

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { navLinks } from "@/lib/nav-links";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -82,15 +83,18 @@ export function MobileNav() {
             >
               <div className="flex items-center justify-between px-6 py-4">
                 <span className="font-mono text-sm text-fg-muted">Menu</span>
-                <button
-                  ref={closeButtonRef}
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  aria-label="Close menu"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
-                >
-                  <X className="h-4 w-4" aria-hidden="true" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <ThemeToggle />
+                  <button
+                    ref={closeButtonRef}
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    aria-label="Close menu"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-fg"
+                  >
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
               <nav className="flex flex-col gap-1 px-6 py-4">
                 {navLinks.map((link) => (
