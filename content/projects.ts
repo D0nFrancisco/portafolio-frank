@@ -2,7 +2,6 @@ export type Project = {
   slug: string;
   name: string;
   oneLiner: string;
-  year: string;
   stack: string[];
   github: string;
   demo?: string;
@@ -13,72 +12,72 @@ export type Project = {
   learnings: string;
 };
 
-// Case-study content is a first draft grounded in what each project actually
-// does. The `challenges`/`learnings` fields are written from the feature set
-// itself, not invented metrics — review and adjust them to match how it
-// actually went before publishing.
+// Every problem/approach/challenge/result/learning below is sourced from
+// the CV — nothing here is a metric, result, or difficulty that can't be
+// backed up in a technical interview. See CONTENT_REVIEW.md.
 export const projects: Project[] = [
   {
     slug: "sysguard",
     name: "SysGuard",
-    oneLiner: "A lightweight Bash monitor for CPU, RAM, disk and process health on Linux.",
-    year: "2025",
-    stack: ["Bash", "Linux", "Shell Scripting", "Cron Jobs"],
+    oneLiner:
+      "A Bash tool that monitors CPU, RAM, disk, and network traffic on Linux, with color-coded alerts and automatic HTML reports.",
+    stack: ["Bash Shell Scripting", "awk / sed / grep", "Cron Jobs", "HTML5 / CSS3"],
     github: "https://github.com/D0nFrancisco/sysguard",
     problem:
-      "I wanted visibility into a Linux machine's resource usage without standing up a full monitoring stack for a single box. Most options were either too heavy (Prometheus + Grafana for one machine) or too opaque to reason about end to end.",
+      "I wanted a way to keep an eye on a Linux machine's health — CPU, memory, disk, and network traffic — without installing a full monitoring stack for a single box, using only tools already available on any Linux system.",
     approach:
-      "SysGuard is a Bash script scheduled via cron that polls standard Linux tools (/proc, top, df, ps) on an interval, compares the results against configurable thresholds, writes timestamped reports, and raises an alert when a threshold is crossed.",
+      "SysGuard is a Bash script built around standard Unix text-processing tools (awk, sed, grep) to parse system data. It raises color-coded ANSI alerts in the terminal so problems are visible at a glance, and generates HTML/CSS reports for a record outside the terminal. It runs unattended on a schedule via cron, with alert thresholds that can be adjusted without touching the source code.",
     challenges: [
-      "Parsing command output reliably — top/ps/df formatting isn't identical across distros and versions — without pulling in a heavier language runtime just to get structured data.",
-      "Deciding what actually counts as a meaningful alert: a single CPU spike isn't a real signal, so the script needed to avoid alert fatigue from momentary blips.",
-      "Making failures loud instead of silent. Cron jobs run unattended at odd hours, so the script needed real exit codes and logging, not a script that fails quietly and looks fine from the outside.",
+      "Keeping alert thresholds configurable from outside the script, so they can be tuned per machine without editing and redeploying the code itself.",
+      "Generating readable HTML/CSS reports from inside a Bash script — there's no templating engine to lean on, so the output has to be assembled by hand.",
+      "Using awk/sed/grep instead of a general-purpose language to parse system data, which keeps the tool dependency-free but means every transformation has to be expressed as a text-processing pipeline.",
     ],
     result:
-      "A monitor that runs unattended on a schedule and gives an honest read of machine health using nothing but POSIX tools and Bash — no runtime, no dependencies to keep patched.",
+      "A monitoring script that runs unattended via cron, reports CPU, RAM, disk, and network status through both terminal alerts and generated HTML reports, and can be retuned without changing the code.",
     learnings:
-      "Shell scripting rewards defensiveness. Quoting variables, validating input, and handling a missing command gracefully matters more here than in a memory-safe language, because in Bash the default failure mode is silence.",
+      "Bash plus core Unix tools can go further than expected for system monitoring without pulling in a heavier runtime — the trade-off is that everything, including HTML output, has to be built by hand.",
   },
   {
     slug: "taskflow",
     name: "TaskFlow",
-    oneLiner: "A layered Spring Boot REST API for task management with real validation and error handling.",
-    year: "2025",
-    stack: ["Java", "Spring Boot", "MySQL", "REST API", "Maven"],
+    oneLiner:
+      "A layered Spring Boot REST API for task management with business rules, soft delete, and centralized error handling.",
+    stack: ["Java", "Spring Boot 3.2", "JPA / Hibernate", "PostgreSQL", "Maven"],
     github: "https://github.com/D0nFrancisco/taskflow",
     problem:
-      "I wanted to understand how a production-shaped Java backend is actually structured — not another CRUD walkthrough, but one with real validation and consistent error handling. Task management was the domain because it's simple enough to reason about end to end.",
+      "I wanted to build a REST API with the structure of a real service, not just CRUD endpoints — with actual business rules, proper error handling, and clean layering — using task management as a domain simple enough to reason about end to end.",
     approach:
-      "A layered Spring Boot service (controller / service / repository) backed by MySQL via Spring Data JPA, with request validation at the API boundary and centralized exception handling instead of per-endpoint try/catch blocks.",
+      "TaskFlow is a layered Spring Boot service using JPA/Hibernate over PostgreSQL, with standardized endpoints for creating, updating, filtering by status or priority, and querying overdue tasks. Deleting a task is a soft delete rather than a hard removal, state transitions follow explicit business rules instead of accepting any value, and the API validates input and handles exceptions globally instead of per endpoint.",
     challenges: [
-      "Getting error responses consistent across every endpoint — replaced scattered try/catch blocks with a single @ControllerAdvice so every failure mode returns the same response shape.",
-      "Keeping validation at the DTO boundary (Bean Validation) instead of letting database constraints leak straight into API error messages.",
-      "Actually understanding what Spring Boot's autoconfiguration wires up, instead of treating it as a black box — traced through the generated beans to see what was happening and why.",
+      "Modeling state transitions as business rules instead of letting any status change through — deciding which transitions are actually valid for a task.",
+      "Soft delete changes how every other query has to behave: filtering, counting, and listing all need to account for records that are 'deleted' but still in the table.",
+      "Keeping error handling and input validation consistent and centralized, instead of duplicated per endpoint.",
     ],
     result:
-      "A working REST API with predictable, consistently-shaped error responses, validated input, and a Maven build a new contributor could pick up without guessing at conventions.",
+      "A REST API with layered architecture, real business rules around task state, soft delete, global exception handling, and standardized endpoints — including a dedicated query for overdue tasks.",
     learnings:
-      "Most of the real design work in a CRUD API isn't the CRUD — it's the error handling and the validation boundary. That's what makes an API predictable for whoever has to call it.",
+      "Most of the design work in an API like this isn't the CRUD part — it's the rules around what a valid state transition is and how deletion should actually behave, which end up shaping almost every other endpoint.",
   },
   {
     slug: "weathernow",
     name: "WeatherNow",
-    oneLiner: "A Next.js weather app built to handle a third-party API's failure modes, not just its happy path.",
-    year: "2025",
-    stack: ["JavaScript", "Next.js", "Tailwind CSS", "REST API"],
+    oneLiner:
+      "A bilingual Next.js weather app with autocomplete search, automatic geolocation, and a 5-day forecast, deployed on Vercel.",
+    stack: ["Next.js 14", "Tailwind CSS v4", "OpenWeatherMap API", "Vercel"],
+    // TODO: add the live Vercel URL once the current version is deployed.
     github: "https://github.com/D0nFrancisco/weathernow",
     problem:
-      "I wanted a small real frontend project focused on consuming a third-party REST API properly — handling rate limits, bad input and network failures — instead of the happy-path version most tutorials show.",
+      "I wanted a real frontend project built on a third-party API, with a bilingual interface and the features people actually expect from a weather app — not just a single hardcoded city lookup.",
     approach:
-      "A Next.js app that queries the OpenWeatherMap API for current conditions and forecast by city, with explicit loading and error states and a responsive Tailwind layout.",
+      "WeatherNow is a Next.js 14 app styled with Tailwind CSS v4 that consumes the OpenWeatherMap API for current conditions and a 5-day forecast. It includes autocomplete city search, automatic geolocation on load, a Spanish/English interface, and a responsive layout, deployed to production on Vercel.",
     challenges: [
-      "Handling the API's real failure modes — unknown city names, rate limiting, timeouts — so the UI communicates what went wrong instead of breaking silently.",
-      "Keeping the API key server-side instead of shipping it in the client bundle.",
-      "Building the fetch/loading/error state by hand without a data-fetching library, specifically to understand what tools like React Query or SWR are abstracting away.",
+      "Building a bilingual interface (Spanish/English) that covers every piece of UI text, not just the main content.",
+      "Wiring up automatic geolocation as a starting point while still supporting manual search with autocomplete as the primary flow.",
+      "Handling the practical side of shipping to production — environment configuration and deployment on Vercel, not just running it locally.",
     ],
     result:
-      "A weather app that degrades gracefully when the API or the network doesn't cooperate, instead of just breaking — and the first project where I worked directly with Next.js and Tailwind.",
+      "A deployed, bilingual weather app with autocomplete search, geolocation, and a 5-day forecast — live on Vercel rather than only running locally.",
     learnings:
-      "Keeping the API key server-side here is the direct reason this portfolio's own contact form runs through a Next.js Server Action instead of calling a third-party endpoint straight from the client.",
+      "Bilingual UI and location-aware features both push you to think about the app's actual entry points — where a real user starts (their location, a search) instead of just the happy path with one hardcoded city.",
   },
 ];
