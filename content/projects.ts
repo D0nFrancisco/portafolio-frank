@@ -37,9 +37,9 @@ const projectsShared: Array<Pick<Project, "slug" | "name" | "stack" | "github" |
   {
     slug: "weathernow",
     name: "WeatherNow",
-    stack: ["Next.js 14", "Tailwind CSS v4", "OpenWeatherMap API", "Vercel"],
-    github: "https://github.com/D0nFrancisco/weathernow",
-    // demo: "", // TODO: add the live Vercel URL once the current version is deployed.
+    stack: ["Next.js 16", "TypeScript", "Tailwind CSS v4", "next-intl", "OpenWeatherMap API", "Vercel"],
+    github: "https://github.com/D0nFrancisco/weathernow-v2",
+    demo: "https://weathernow-v2.vercel.app/es",
   },
 ];
 
@@ -89,20 +89,20 @@ const projectsContent: Record<AppLocale, ProjectContent[]> = {
     {
       // WeatherNow
       oneLiner:
-        "A bilingual Next.js weather app with autocomplete search, automatic geolocation, and a 5-day forecast, deployed on Vercel.",
+        "A bilingual, server-rendered weather app — current conditions, hourly and 7-day forecast — rebuilt from the ground up as a deliberately small, well-engineered product instead of a feature-maximal demo.",
       problem:
-        "I wanted a real frontend project built on a third-party API, with a bilingual interface and the features people expect from a weather app, not just a single hardcoded city lookup.",
+        "The first version of WeatherNow worked, but it fetched data client-side, treated the API key as a client-side concern, and had grown its feature list with no real testing story behind it. I wanted to rebuild it properly: correct data on first paint, a validated boundary against a third-party API, and enough automated coverage that a regression in search or forecast rendering couldn't ship unnoticed.",
       approach:
-        "WeatherNow is a Next.js 14 app styled with Tailwind CSS v4 that consumes the OpenWeatherMap API for current conditions and a 5-day forecast. It includes autocomplete city search, automatic geolocation on load, a Spanish/English interface, and a responsive layout, deployed to production on Vercel.",
+        "WeatherNow v2 is a Next.js 16 App Router app in strict TypeScript. Weather data is fetched server-side in the page itself — no client-side fetch waterfall — against the OpenWeatherMap One Call API 3.0 and Geocoding API, with the key kept server-only and never exposed as `NEXT_PUBLIC_*`. Every external response is validated with Zod at the boundary before it reaches a component. Locale-prefixed routing (`/en`, `/es`) is handled by next-intl, and the only client-side state left is the °C/°F and light/dark preference and the search box. Search hits a server-side geocode proxy, debounced and cancelled via `AbortController` on every keystroke; a query parser recognizes a trailing country reference in free text — an ISO code, an alias, or a country name in English or Spanish, derived from `Intl.DisplayNames` rather than a hand-maintained list — and reduces it to the strict format the API actually requires.",
       challenges: [
-        "Covering every piece of UI text in both Spanish and English, including labels and error states, so the interface didn't end up half-translated.",
-        "Wiring up automatic geolocation as a starting point while still supporting manual search with autocomplete as the primary flow.",
-        "Handling the practical side of shipping to production: environment variables and deployment configuration on Vercel, which running it locally never required.",
+        "Parsing free-text country qualifiers (\"Bogotá, Colombia\", \"Madrid ES\", \"New York USA\") into the strict `City,CC` format OpenWeatherMap requires, with a fallback retry on the bare city name in case the qualifier was actually a state.",
+        "Making sure a slower, older search request could never overwrite the state set by a newer one — solved with `AbortController` and proven with a test that simulates the out-of-order response, not just assumed to work.",
+        "Adding a per-condition accent color to the hero temperature without letting it regress the two WCAG-AA-verified base surfaces — the accent is independently contrast-checked in both themes and scoped only to the hero figure, its icon, and a low-opacity halo, never a surface, border, or body text.",
       ],
       result:
-        "A deployed, bilingual weather app with autocomplete search, geolocation, and a 5-day forecast — live on Vercel rather than only running locally.",
+        "A rebuilt, deployed weather app with server-rendered forecasts, a schema-validated API boundary, bilingual locale-prefixed routing, and a test suite (Vitest + Testing Library for units/components, Playwright + axe-core for e2e and accessibility) covering the full data-transform layer and the interaction paths that actually break — debounce, caching, stale-result retention, and request race conditions.",
       learnings:
-        "Bilingual UI and location-aware features change how you think about a user's entry point. A real visit starts from their location or a search, not a hardcoded city typed into a demo.",
+        "A rebuild is a chance to fix architecture, not just add features. Moving data-fetching server-side and validating the API boundary with Zod eliminated a whole class of bugs the first version's client-side fetch never surfaced, and writing a test for the actual race condition in search — not just the happy path — is what turns 'seems to work' into 'proven to work.'",
     },
   ],
   es: [
@@ -145,20 +145,20 @@ const projectsContent: Record<AppLocale, ProjectContent[]> = {
     {
       // WeatherNow
       oneLiner:
-        "Una aplicación de clima en Next.js, bilingüe, con búsqueda con autocompletado, geolocalización automática y pronóstico a 5 días, desplegada en Vercel.",
+        "Una app de clima bilingüe y renderizada en servidor — condiciones actuales, pronóstico por horas y a 7 días — reconstruida desde cero como un producto deliberadamente pequeño y bien ingenierado, no una demo maximalista en funciones.",
       problem:
-        "Quería un proyecto de frontend real construido sobre una API de terceros, con una interfaz bilingüe y las funciones que la gente espera de una app de clima, no solo una búsqueda de una sola ciudad fija en el código.",
+        "La primera versión de WeatherNow funcionaba, pero traía los datos del lado del cliente, trataba la clave de la API como una preocupación de cliente, y había ido sumando funciones sin una historia real de pruebas detrás. Quería reconstruirla bien: datos correctos desde el primer render, un límite validado frente a una API de terceros, y suficiente cobertura automatizada para que una regresión en la búsqueda o el pronóstico no pudiera llegar a producción sin ser detectada.",
       approach:
-        "WeatherNow es una aplicación en Next.js 14 con estilos en Tailwind CSS v4 que consume la API de OpenWeatherMap para el clima actual y el pronóstico a 5 días. Incluye búsqueda de ciudades con autocompletado, geolocalización automática al cargar, una interfaz en español/inglés y un diseño responsive, desplegada en producción en Vercel.",
+        "WeatherNow v2 es una app de Next.js 16 con App Router en TypeScript estricto. Los datos del clima se obtienen del lado del servidor directamente en la página — sin cascada de fetches en el cliente — contra la One Call API 3.0 y la Geocoding API de OpenWeatherMap, con la clave restringida al servidor y nunca expuesta como `NEXT_PUBLIC_*`. Cada respuesta externa se valida con Zod en el límite antes de llegar a un componente. El enrutamiento con prefijo de idioma (`/en`, `/es`) lo maneja next-intl, y el único estado del lado del cliente que queda es la preferencia °C/°F y claro/oscuro, más la caja de búsqueda. La búsqueda pasa por un proxy de geocodificación del lado del servidor, con debounce y cancelación vía `AbortController` en cada tecla; un parser de consultas reconoce una referencia de país al final del texto libre — un código ISO, un alias, o el nombre de un país en inglés o español, derivado de `Intl.DisplayNames` en lugar de una lista mantenida a mano — y la reduce al formato estricto que la API realmente requiere.",
       challenges: [
-        "Cubrir cada texto de la interfaz tanto en español como en inglés, incluyendo etiquetas y estados de error, para que la interfaz no quedara traducida a medias.",
-        "Integrar la geolocalización automática como punto de partida sin dejar de dar prioridad a la búsqueda manual con autocompletado como flujo principal.",
-        "Resolver el lado práctico de llevar el proyecto a producción: variables de entorno y configuración de despliegue en Vercel, algo que correrlo en local nunca exigió.",
+        "Interpretar calificadores de país en texto libre (\"Bogotá, Colombia\", \"Madrid ES\", \"New York USA\") y reducirlos al formato estricto `City,CC` que exige OpenWeatherMap, con un reintento automático sobre el nombre de ciudad solo en caso de que el calificador fuera en realidad un estado.",
+        "Garantizar que una solicitud de búsqueda más lenta y antigua nunca pudiera sobrescribir el estado establecido por una más reciente — resuelto con `AbortController` y comprobado con una prueba que simula la respuesta fuera de orden, no solo asumido como correcto.",
+        "Añadir un color de acento por condición climática a la temperatura principal sin que eso arriesgara las dos superficies base ya verificadas contra WCAG-AA — el acento se verifica de forma independiente en ambos temas y se limita solo a la cifra principal, su ícono y un halo decorativo de baja opacidad, nunca a una superficie, borde o texto de cuerpo.",
       ],
       result:
-        "Una app de clima bilingüe y desplegada, con búsqueda con autocompletado, geolocalización y pronóstico a 5 días — funcionando en vivo en Vercel y no solo en local.",
+        "Una app de clima reconstruida y desplegada, con pronósticos renderizados en servidor, un límite de API validado por esquema, enrutamiento bilingüe con prefijo de idioma, y una suite de pruebas (Vitest + Testing Library para unidades/componentes, Playwright + axe-core para e2e y accesibilidad) que cubre toda la capa de transformación de datos y las rutas de interacción que realmente fallan — debounce, caché, retención de resultados ante errores, y condiciones de carrera en las solicitudes.",
       learnings:
-        "Una interfaz bilingüe y las funciones que dependen de la ubicación cambian la forma de pensar el punto de entrada de un usuario real. Una visita real empieza desde su ubicación o una búsqueda, no desde una ciudad fija escrita en una demo.",
+        "Una reconstrucción es una oportunidad para arreglar la arquitectura, no solo sumar funciones. Mover la obtención de datos al servidor y validar el límite de la API con Zod eliminó toda una clase de errores que el fetch del lado del cliente de la primera versión nunca dejaba ver, y escribir una prueba para la condición de carrera real en la búsqueda — no solo el camino feliz — es lo que convierte un \"parece que funciona\" en un \"está comprobado que funciona\".",
     },
   ],
 };

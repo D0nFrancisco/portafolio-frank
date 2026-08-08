@@ -124,7 +124,7 @@ None are required to build or run the site. Copy `.env.example` to `.env.local` 
 2. In Vercel, **Add New → Project**, import the GitHub repo. Framework preset (Next.js) is auto-detected — no build command overrides needed.
 3. Leave environment variables unset for the first deploy. `NEXT_PUBLIC_SITE_URL` will fall back to Vercel's own `VERCEL_PROJECT_PRODUCTION_URL`, so sitemap/OG/robots are already correct against the `*.vercel.app` domain.
 4. If a custom domain is attached later, add `NEXT_PUBLIC_SITE_URL=https://<your-domain>` in Project Settings → Environment Variables and redeploy, so metadata doesn't keep pointing at the Vercel-assigned domain.
-5. Before it's shared publicly, replace the two known placeholders in `content/profile.ts`: the LinkedIn URL (`TU_USUARIO`) and, once available, a live demo link for WeatherNow in `content/projects.ts`.
+5. Before it's shared publicly, replace the remaining known placeholder in `content/profile.ts`: the LinkedIn URL (`TU_USUARIO`).
 
 No other configuration is required — `next.config.ts` is intentionally left at defaults because nothing in the project needs custom headers, redirects, or image domains.
 
@@ -175,7 +175,6 @@ No component changes. Every page, the middleware, the sitemap, and the language 
 ## Planned improvements
 
 - [ ] Replace the LinkedIn placeholder (`content/profile.ts`) once the account is unrestricted.
-- [ ] Add a live demo link for WeatherNow (`content/projects.ts`) once it's redeployed.
 - [ ] Add real screenshots/GIFs of all three projects — currently every case study is text-only, which is a known gap (`PORTFOLIO_AUDIT.md` §1.6).
 - [ ] Link a downloadable résumé PDF from the header/footer.
 - [ ] Set `NEXT_PUBLIC_SITE_URL` to the final custom domain once one is attached.
