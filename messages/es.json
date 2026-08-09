@@ -36,7 +36,10 @@
     "challenges": "Retos",
     "result": "Resultado",
     "learnings": "Qué aprendí",
-    "nextProject": "Siguiente proyecto"
+    "nextProject": "Siguiente proyecto",
+    "screenshots": "Capturas",
+    "viewFullSize": "Ver tamaño completo",
+    "closeImage": "Cerrar imagen"
   },
   "contact": {
     "eyebrow": "Contacto",

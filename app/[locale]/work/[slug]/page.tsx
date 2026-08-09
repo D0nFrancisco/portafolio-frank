@@ -6,6 +6,7 @@ import { Link } from "@/i18n/routing";
 import { Container } from "@/components/ui/Container";
 import { CaseStudyHeader } from "@/components/work/CaseStudyHeader";
 import { CaseStudyBody } from "@/components/work/CaseStudyBody";
+import { ProjectGallery } from "@/components/work/ProjectGallery";
 import { getProjects, getProjectBySlug, getProjectSlugParams } from "@/content/projects";
 import { localeAlternates } from "@/lib/alternates";
 import { cn } from "@/lib/cn";
@@ -56,6 +57,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
       </Link>
 
       <CaseStudyHeader project={project} locale={locale} />
+      <ProjectGallery images={project.images} locale={locale} />
       <CaseStudyBody project={project} locale={locale} />
 
       <div className="mt-4 border-t border-border pt-10">

@@ -1,5 +1,12 @@
 import type { AppLocale } from "@/i18n/routing";
 
+export type ProjectImage = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
 export type Project = {
   slug: string;
   name: string;
@@ -12,11 +19,16 @@ export type Project = {
   challenges: string[];
   result: string;
   learnings: string;
+  // Optional: most projects don't have screenshots yet. When present, the
+  // first image is the primary/preview shot; any images after it are
+  // rendered grouped together as a continuation (e.g. a report split
+  // across several captures).
+  images?: ProjectImage[];
 };
 
 type ProjectContent = Pick<
   Project,
-  "oneLiner" | "problem" | "approach" | "challenges" | "result" | "learnings"
+  "oneLiner" | "problem" | "approach" | "challenges" | "result" | "learnings" | "images"
 >;
 
 // Slug, name, stack and links don't change with language — technology names
@@ -25,7 +37,7 @@ const projectsShared: Array<Pick<Project, "slug" | "name" | "stack" | "github" |
   {
     slug: "sysguard",
     name: "SysGuard",
-    stack: ["Bash Shell Scripting", "awk / sed / grep", "Cron Jobs", "HTML5 / CSS3"],
+    stack: ["Bash Shell Scripting", "awk / sed / grep", "Cron Jobs", "systemd", "HTML5 / CSS3"],
     github: "https://github.com/D0nFrancisco/sysguard",
   },
   {
@@ -44,29 +56,50 @@ const projectsShared: Array<Pick<Project, "slug" | "name" | "stack" | "github" |
 ];
 
 // Every problem/approach/challenge/result/learning below is sourced from
-// the CV — nothing here is a metric, result, or difficulty that can't be
-// backed up in a technical interview. See CONTENT_REVIEW.md. The Spanish
-// entries are a faithful translation of the English ones, not a separate
-// rewrite — same claims, same facts, both languages tell the same story.
+// the CV, or — for SysGuard — the project's own README, and nothing here
+// is a metric, result, or difficulty that can't be backed up in a
+// technical interview. See CONTENT_REVIEW.md. The Spanish entries are a
+// faithful translation of the English ones, not a separate rewrite —
+// same claims, same facts, both languages tell the same story.
 const projectsContent: Record<AppLocale, ProjectContent[]> = {
   en: [
     {
       // SysGuard
       oneLiner:
-        "A Bash tool that monitors CPU, RAM, disk, and network traffic on Linux, with color-coded alerts and automatic HTML reports.",
+        "A dependency-free Bash tool that monitors CPU, RAM, disk, and network health on Linux — three-level threshold alerts with a persistent cooldown, CSV history, an interactive terminal dashboard, and self-contained HTML reports, built to run unattended via cron or systemd.",
       problem:
-        "I wanted a way to keep an eye on a Linux machine's health — CPU, memory, disk, and network traffic — without installing a full monitoring stack for a single box, using only tools already available on any Linux system.",
+        "A small server doesn't need a full Prometheus-and-Grafana stack just to know if its disk is filling up, but a script that only prints percentages isn't enough either. I wanted the middle ground: real alerting with configurable thresholds, a record of what happened, and a way to run it unattended — installable on any Linux box using nothing but the tools already on it.",
       approach:
-        "SysGuard is a Bash script built around standard Unix text-processing tools (awk, sed, grep) to parse system data. It raises color-coded ANSI alerts in the terminal so problems are visible at a glance, and generates HTML/CSS reports for a record outside the terminal. It runs unattended on a schedule via cron, with alert thresholds that can be adjusted without touching the source code.",
+        "SysGuard is a Bash CLI (check, dashboard, report, history, processes, network, system) built around two library files every subcommand shares: lib/metrics.sh is the single source of truth for CPU/RAM/swap/disk/network/load, and lib/thresholds.sh is the only place that decides OK/WARNING/CRITICAL and picks the worst disk — so check, the dashboard, and the HTML report can never disagree about a machine's state. Alert state persists in a flock-protected file so a metric stuck in WARNING doesn't re-notify on every run, and a recovery is logged exactly once. History is a pruned CSV with 24h/7d aggregates, reports/status.html is self-contained HTML/CSS with no JavaScript, and notifications go through a small webhook abstraction that new providers can plug into without touching the alerting logic.",
       challenges: [
-        "Keeping alert thresholds configurable from outside the script, so they can be tuned per machine without editing and redeploying the code itself.",
-        "Generating readable HTML/CSS reports from inside a Bash script — there's no templating engine to lean on, so the output has to be assembled by hand.",
-        "Using awk/sed/grep instead of a general-purpose language to parse system data, which keeps the tool dependency-free but means every transformation has to be expressed as a text-processing pipeline.",
+        "Keeping a persistent, race-safe alert cooldown: two overlapping cron runs must never fight over data/alerts.state, a stuck WARNING shouldn't re-notify every run, and a recovery has to log exactly once — solved with flock around the state file.",
+        "Autodetecting every real filesystem across arbitrary hosts while filtering out pseudo-filesystems (tmpfs, proc, overlay, cgroup, and others) instead of relying on a hardcoded list of mount points.",
+        "Getting real automated coverage for a Bash tool with no framework to lean on — writing a ~30-line assertion helper and testing against actual /proc data, including a regression for a df header that changes under a translated locale.",
       ],
       result:
-        "A monitoring script that runs unattended via cron, reports CPU, RAM, disk, and network status through both terminal alerts and generated HTML reports, and can be retuned without changing the code.",
+        "A monitoring tool with a full CLI (check, dashboard, report, history, processes, network, system), three-level threshold alerts with cooldown and recovery tracking, pruned CSV history with aggregates, self-contained HTML reports, optional webhook notifications, standard exit codes for cron/systemd integration, and its own test suite covering config validation, threshold logic, and real metric parsing.",
       learnings:
-        "Bash plus core Unix tools can go further than expected for system monitoring without pulling in a heavier runtime — the trade-off is that everything, including HTML output, has to be built by hand.",
+        "Centralizing metrics and threshold logic in two library files that every subcommand calls through — instead of letting check, dashboard, and report each compute CPU or disk state their own way — is what kept them from silently drifting apart as the tool grew from a single script into seven subcommands.",
+      images: [
+        {
+          src: "/images/work/sysguard/sysguard-terminal.png",
+          alt: "Four SysGuard terminal panes: the `processes` command listing top CPU and memory consumers, `check` running a one-off health check, `help` printing the command list, and the interactive `dashboard` showing live CPU/RAM/disk/network gauges.",
+          width: 1904,
+          height: 1029,
+        },
+        {
+          src: "/images/work/sysguard/sysguard-report-1.png",
+          alt: "Top half of a SysGuard HTML report: overall host status, CPU/RAM/swap/disk health cards, system information, and the start of the filesystems table.",
+          width: 1018,
+          height: 898,
+        },
+        {
+          src: "/images/work/sysguard/sysguard-report-2.png",
+          alt: "Bottom half of the same SysGuard HTML report, continuing the filesystems table and showing top processes by CPU and the resource history for the last 24 hours.",
+          width: 1055,
+          height: 790,
+        },
+      ],
     },
     {
       // TaskFlow
@@ -109,20 +142,40 @@ const projectsContent: Record<AppLocale, ProjectContent[]> = {
     {
       // SysGuard
       oneLiner:
-        "Una herramienta en Bash que monitorea CPU, RAM, disco y tráfico de red en Linux, con alertas por colores y reportes HTML automáticos.",
+        "Una herramienta en Bash sin dependencias que monitorea CPU, RAM, disco y red en Linux — alertas de tres niveles con cooldown persistente, historial en CSV, un dashboard interactivo en terminal y reportes HTML autocontenidos, pensada para correr sin supervisión vía cron o systemd.",
       problem:
-        "Quería una forma de vigilar la salud de una máquina Linux — CPU, memoria, disco y tráfico de red — sin instalar un stack de monitoreo completo para un solo equipo, usando solo herramientas ya disponibles en cualquier sistema Linux.",
+        "Un servidor pequeño no necesita un stack completo de Prometheus y Grafana para saber si el disco se está llenando, pero un script que solo imprime porcentajes tampoco alcanza. Quería el punto intermedio: alertas reales con umbrales configurables, un registro de lo que pasó, y una forma de correrlo sin supervisión — instalable en cualquier máquina Linux usando solo las herramientas que ya trae.",
       approach:
-        "SysGuard es un script en Bash construido alrededor de herramientas estándar de procesamiento de texto de Unix (awk, sed, grep) para analizar los datos del sistema. Genera alertas ANSI por colores en la terminal para que los problemas sean visibles de un vistazo, y produce reportes en HTML/CSS como registro fuera de la terminal. Corre sin supervisión según una programación vía cron, con umbrales de alerta ajustables sin tocar el código fuente.",
+        "SysGuard es una CLI en Bash (check, dashboard, report, history, processes, network, system) construida alrededor de dos archivos de librería que comparten todos los subcomandos: lib/metrics.sh es la única fuente de verdad para CPU/RAM/swap/disco/red/load, y lib/thresholds.sh es el único lugar que decide OK/WARNING/CRITICAL y elige el peor disco — así check, el dashboard y el reporte HTML nunca pueden discrepar sobre el estado de una máquina. El estado de las alertas se persiste en un archivo protegido con flock, para que una métrica atascada en WARNING no vuelva a notificar en cada corrida y una recuperación se registre una sola vez. El historial es un CSV podado con agregados de 24h/7d, reports/status.html es HTML/CSS autocontenido sin JavaScript, y las notificaciones pasan por una pequeña abstracción de webhook en la que se pueden agregar nuevos proveedores sin tocar la lógica de alertas.",
       challenges: [
-        "Mantener los umbrales de alerta configurables desde fuera del script, para poder ajustarlos por máquina sin editar y volver a desplegar el código.",
-        "Generar reportes HTML/CSS legibles desde dentro de un script de Bash — no hay un motor de plantillas en el que apoyarse, así que la salida hay que ensamblarla a mano.",
-        "Usar awk/sed/grep en lugar de un lenguaje de propósito general para analizar los datos del sistema, lo que mantiene la herramienta libre de dependencias pero implica expresar cada transformación como un pipeline de procesamiento de texto.",
+        "Mantener un cooldown de alertas persistente y a prueba de carreras: dos corridas de cron solapadas no pueden pelear por data/alerts.state, una métrica atascada en WARNING no debe volver a notificar en cada corrida, y una recuperación tiene que registrarse una sola vez — resuelto con flock sobre el archivo de estado.",
+        "Autodetectar todos los sistemas de archivos reales en hosts arbitrarios filtrando los pseudo-filesystems (tmpfs, proc, overlay, cgroup, entre otros) en vez de depender de una lista fija de puntos de montaje.",
+        "Lograr cobertura de pruebas real para una herramienta en Bash sin ningún framework de por medio — escribir un helper de aserciones de ~30 líneas y probar contra datos reales de /proc, incluyendo una regresión para un encabezado de df que cambia bajo un locale traducido.",
       ],
       result:
-        "Un script de monitoreo que corre sin supervisión vía cron, reporta el estado de CPU, RAM, disco y red tanto por alertas en terminal como por reportes HTML generados, y se puede reconfigurar sin cambiar el código.",
+        "Una herramienta de monitoreo con una CLI completa (check, dashboard, report, history, processes, network, system), alertas de tres niveles con cooldown y seguimiento de recuperación, historial en CSV podado con agregados, reportes HTML autocontenidos, notificaciones opcionales por webhook, exit codes estándar para integrarse con cron/systemd, y su propia suite de pruebas que cubre validación de configuración, lógica de umbrales y el parseo real de métricas.",
       learnings:
-        "Bash junto con las herramientas centrales de Unix puede llegar más lejos de lo esperado para monitoreo de sistemas sin recurrir a un runtime más pesado — la contrapartida es que todo, incluida la salida HTML, hay que construirlo a mano.",
+        "Centralizar la lógica de métricas y umbrales en dos archivos de librería por los que pasan todos los subcomandos — en vez de dejar que check, dashboard y report calculen cada uno el estado de CPU o disco a su manera — es lo que evitó que se fueran desalineando en silencio a medida que la herramienta creció de un solo script a siete subcomandos.",
+      images: [
+        {
+          src: "/images/work/sysguard/sysguard-terminal.png",
+          alt: "Cuatro paneles de terminal con SysGuard: el comando `processes` listando los procesos que más CPU y memoria consumen, `check` corriendo un chequeo puntual, `help` mostrando la lista de comandos, y el `dashboard` interactivo con medidores en vivo de CPU/RAM/disco/red.",
+          width: 1904,
+          height: 1029,
+        },
+        {
+          src: "/images/work/sysguard/sysguard-report-1.png",
+          alt: "Mitad superior de un reporte HTML de SysGuard: estado general del host, tarjetas de salud de CPU/RAM/swap/disco, información del sistema y el inicio de la tabla de sistemas de archivos.",
+          width: 1018,
+          height: 898,
+        },
+        {
+          src: "/images/work/sysguard/sysguard-report-2.png",
+          alt: "Mitad inferior del mismo reporte HTML de SysGuard, con la continuación de la tabla de sistemas de archivos y los procesos por CPU y el historial de recursos de las últimas 24 horas.",
+          width: 1055,
+          height: 790,
+        },
+      ],
     },
     {
       // TaskFlow

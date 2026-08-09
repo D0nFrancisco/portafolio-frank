@@ -36,7 +36,10 @@
     "challenges": "Challenges",
     "result": "Result",
     "learnings": "What I learned",
-    "nextProject": "Next project"
+    "nextProject": "Next project",
+    "screenshots": "Screenshots",
+    "viewFullSize": "View full size",
+    "closeImage": "Close image"
   },
   "contact": {
     "eyebrow": "Contact",
