@@ -29,8 +29,7 @@ const shared = {
   email: "fdavid1704@gmail.com",
   social: {
     github: { label: "GitHub", href: "https://github.com/D0nFrancisco" },
-    // TODO: replace with the real LinkedIn URL once the account is unrestricted.
-    linkedin: { label: "LinkedIn", href: "https://linkedin.com/in/TU_USUARIO" },
+    linkedin: { label: "LinkedIn", href: "https://www.linkedin.com/in/frank-gualdron-349673425/" },
     email: { label: "Email", href: "mailto:fdavid1704@gmail.com" },
   },
 };
