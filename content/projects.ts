@@ -43,7 +43,7 @@ const projectsShared: Array<Pick<Project, "slug" | "name" | "stack" | "github" |
   {
     slug: "taskflow",
     name: "TaskFlow",
-    stack: ["Java", "Spring Boot 3.2", "JPA / Hibernate", "PostgreSQL", "Maven"],
+    stack: ["Java 17", "Spring Boot 4", "Spring Security + JWT", "PostgreSQL 16", "Flyway", "Maven"],
     github: "https://github.com/D0nFrancisco/taskflow",
   },
   {
@@ -104,20 +104,20 @@ const projectsContent: Record<AppLocale, ProjectContent[]> = {
     {
       // TaskFlow
       oneLiner:
-        "A layered Spring Boot REST API for task management with business rules, soft delete, and centralized error handling.",
+        "A Spring Boot REST API for personal task management — JWT auth, ownership-scoped queries, an enforced status state machine, and idempotent soft deletes — built on Flyway migrations with a multi-layer test suite instead of stopping at CRUD.",
       problem:
-        "I wanted to build a REST API with the structure of a real service: proper business rules, real error handling, and clean layering, not just CRUD endpoints. Task management was a domain simple enough to reason about end to end.",
+        "Task list apps are a common portfolio project, but most stop at CRUD. I wanted to build the parts that actually come up in a backend interview: ownership and auth, a consistent error contract, pagination that holds up on a larger dataset, migrations instead of letting Hibernate infer the schema, and a test suite that exercises the business rules instead of just asserting the Spring context boots.",
       approach:
-        "TaskFlow is a layered Spring Boot service using JPA/Hibernate over PostgreSQL, with standardized endpoints for creating, updating, filtering by status or priority, and querying overdue tasks. Deleting a task is a soft delete rather than a hard removal. State transitions follow explicit business rules instead of accepting any value, and the API validates input and handles exceptions globally instead of per endpoint.",
+        "TaskFlow is a layered Spring Boot 4 service — controllers handle HTTP only, DTOs validate input with Jakarta Validation, all business rules live in the service layer, and Spring Data JPA Specifications compose the optional, combinable filters (status, priority, search) behind paginated list and overdue-task queries. Auth is stateless JWT (jjwt) over Spring Security, with every task query scoped to the authenticated user's id at the repository level. Status changes — through either a full update or the dedicated PATCH /status endpoint — go through the same small state machine: a COMPLETED task can only move to CANCELLED, and a CANCELLED task has to pass back through PENDING before it can be COMPLETED again. Delete is a soft delete (an is_active flag) that's idempotent — deleting an already-deleted task still returns 200. The schema is fully owned by Flyway migrations, with ddl-auto set to validate so Hibernate can never silently drift it, and a composite (owner_id, is_active) index backs the hot path every list/filter query hits.",
       challenges: [
-        "Modeling state transitions as business rules instead of letting any status change freely — deciding which transitions should even be allowed for a task.",
-        "Soft delete changes how every other query has to behave: filtering, counting, and listing all need to account for records that are 'deleted' but still in the table.",
-        "Keeping error handling and input validation consistent and centralized, instead of duplicated per endpoint.",
+        "Enforcing the same status state machine identically whether a client goes through the full PUT update or the dedicated PATCH /status endpoint, instead of letting the two code paths validate transitions differently.",
+        "Making soft delete idempotent and consistent everywhere at once — deleting an already-gone task had to return 200 not 404, and every other query (list, filter, count, overdue) had to exclude soft-deleted rows without duplicating that logic per query.",
+        "Keeping cross-user ownership airtight without leaking existence: a task ID that belongs to another user has to 404, not 403, since a 403 would confirm the task exists — enforced in the repository query itself, not as a check bolted on after fetching.",
       ],
       result:
-        "A REST API with layered architecture, real business rules around task state, soft delete, global exception handling, and standardized endpoints — including a dedicated query for overdue tasks.",
+        "A REST API with layered architecture, JWT auth, an enforced status state machine, idempotent soft delete, ownership-scoped queries that return 404 instead of leaking existence, Flyway-managed migrations, paginated/filterable/searchable task listing, a dedicated overdue-tasks query, and a consistent error contract across validation, business-rule, auth, and 404 responses — backed by unit tests (business rules, JWT), @WebMvcTest controller tests, and @DataJpaTest/integration tests against a real PostgreSQL via Testcontainers.",
       learnings:
-        "The real design work in an API like this is the rules: what counts as a valid state transition, and how deletion should behave once records can be soft-deleted. Those decisions end up shaping almost every other endpoint.",
+        "The state machine and the soft delete are two decisions that end up touching almost every other layer of the API — once tasks can be soft-deleted, every list, filter, and count query has to know about it, and once status transitions are restricted, both the full-update and the status-only endpoint have to agree on the same rules or they drift apart. Centralizing those decisions in the service layer, instead of letting each endpoint reimplement them, is what kept them consistent.",
     },
     {
       // WeatherNow
@@ -180,20 +180,20 @@ const projectsContent: Record<AppLocale, ProjectContent[]> = {
     {
       // TaskFlow
       oneLiner:
-        "Una API REST en capas con Spring Boot para gestión de tareas, con reglas de negocio, soft delete y manejo centralizado de errores.",
+        "Una API REST en Spring Boot para gestión personal de tareas — autenticación JWT, consultas con alcance por dueño, una máquina de estados aplicada a las transiciones, y soft delete idempotente — construida sobre migraciones de Flyway con una suite de pruebas en varias capas en lugar de quedarse solo en CRUD.",
       problem:
-        "Quería construir una API REST con la estructura de un servicio real: reglas de negocio reales, manejo de errores de verdad y una separación en capas limpia, no solo endpoints CRUD. La gestión de tareas era un dominio lo bastante simple para razonar sobre él de principio a fin.",
+        "Las apps de lista de tareas son un proyecto de portafolio común, pero la mayoría se queda en CRUD. Quería construir las partes que de verdad aparecen en una entrevista de backend: dueño y autenticación, un contrato de errores consistente, paginación que aguante un dataset más grande, migraciones en vez de dejar que Hibernate infiera el esquema, y una suite de pruebas que ejercite las reglas de negocio en vez de solo comprobar que el contexto de Spring arranca.",
       approach:
-        "TaskFlow es un servicio en capas con Spring Boot que usa JPA/Hibernate sobre PostgreSQL, con endpoints estandarizados para crear, actualizar, filtrar por estado o prioridad, y consultar tareas vencidas. Eliminar una tarea es un soft delete en vez de un borrado definitivo. Las transiciones de estado siguen reglas de negocio explícitas en lugar de aceptar cualquier valor, y la API valida las entradas y maneja las excepciones de forma global en lugar de por endpoint.",
+        "TaskFlow es un servicio en capas con Spring Boot 4 — los controladores solo manejan HTTP, los DTOs validan la entrada con Jakarta Validation, todas las reglas de negocio viven en la capa de servicio, y las Specifications de Spring Data JPA componen los filtros opcionales y combinables (estado, prioridad, búsqueda) detrás de las consultas paginadas de listado y de tareas vencidas. La autenticación es JWT sin estado (jjwt) sobre Spring Security, con cada consulta de tareas limitada al id del usuario autenticado a nivel de repositorio. Los cambios de estado — ya sea por una actualización completa o por el endpoint dedicado PATCH /status — pasan por la misma máquina de estados pequeña: una tarea COMPLETED solo puede pasar a CANCELLED, y una tarea CANCELLED tiene que volver a pasar por PENDING antes de poder completarse de nuevo. Eliminar es un soft delete (un flag is_active) que es idempotente — eliminar una tarea ya eliminada sigue devolviendo 200. El esquema es propiedad completa de las migraciones de Flyway, con ddl-auto en validate para que Hibernate nunca pueda desalinearlo en silencio, y un índice compuesto (owner_id, is_active) respalda el camino caliente que golpea cada consulta de listado/filtro.",
       challenges: [
-        "Modelar las transiciones de estado como reglas de negocio en vez de dejar que cualquier cambio pase libremente — decidir qué transiciones deberían siquiera estar permitidas para una tarea.",
-        "El soft delete cambia cómo se tiene que comportar cada otra consulta: filtrar, contar y listar necesitan tener en cuenta los registros que están 'eliminados' pero siguen en la tabla.",
-        "Mantener el manejo de errores y la validación de entradas consistentes y centralizados, en lugar de duplicados por endpoint.",
+        "Aplicar la misma máquina de estados de forma idéntica sin importar si el cliente usa la actualización completa por PUT o el endpoint dedicado PATCH /status, en lugar de dejar que los dos caminos de código validen las transiciones de forma distinta.",
+        "Hacer que el soft delete fuera idempotente y consistente en todas partes a la vez — eliminar una tarea ya eliminada tenía que devolver 200 y no 404, y cada otra consulta (listar, filtrar, contar, vencidas) tenía que excluir los registros eliminados sin duplicar esa lógica en cada consulta.",
+        "Mantener el aislamiento entre usuarios hermético sin filtrar existencia: un ID de tarea que pertenece a otro usuario tiene que devolver 404, no 403, porque un 403 confirmaría que la tarea existe — aplicado directamente en la consulta del repositorio, no como una verificación añadida después de obtener el registro.",
       ],
       result:
-        "Una API REST con arquitectura en capas, reglas de negocio reales alrededor del estado de las tareas, soft delete, manejo global de excepciones y endpoints estandarizados — incluyendo una consulta dedicada para tareas vencidas.",
+        "Una API REST con arquitectura en capas, autenticación JWT, una máquina de estados aplicada a las transiciones, soft delete idempotente, consultas con alcance por dueño que devuelven 404 en vez de filtrar existencia, migraciones gestionadas con Flyway, listado de tareas paginado/filtrable/buscable, una consulta dedicada para tareas vencidas, y un contrato de errores consistente en las respuestas de validación, reglas de negocio, autenticación y 404 — respaldada por pruebas unitarias (reglas de negocio, JWT), pruebas de controlador con @WebMvcTest, y pruebas @DataJpaTest/de integración contra una PostgreSQL real vía Testcontainers.",
       learnings:
-        "El verdadero trabajo de diseño en una API así son las reglas: qué cuenta como una transición de estado válida, y cómo debería comportarse la eliminación una vez que los registros se pueden eliminar de forma blanda (soft delete). Esas decisiones terminan definiendo casi todos los demás endpoints.",
+        "La máquina de estados y el soft delete son dos decisiones que terminan tocando casi todas las demás capas de la API — una vez que las tareas se pueden eliminar de forma blanda, cada consulta de listado, filtro y conteo tiene que saberlo, y una vez que las transiciones de estado están restringidas, tanto el endpoint de actualización completa como el de solo-estado tienen que coincidir en las mismas reglas o terminan desalineándose. Centralizar esas decisiones en la capa de servicio, en vez de dejar que cada endpoint las reimplemente, es lo que las mantuvo consistentes.",
     },
     {
       // WeatherNow
